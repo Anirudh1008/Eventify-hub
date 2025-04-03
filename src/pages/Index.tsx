@@ -4,15 +4,12 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import EventCategories from '@/components/EventCategories';
 import FeaturedEvents from '@/components/FeaturedEvents';
-import Leaderboard from '@/components/Leaderboard';
+import LeaderboardComponent from '@/components/Leaderboard';
 import GamesSection from '@/components/GamesSection';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
-import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
-  const navigate = useNavigate();
-  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -20,7 +17,7 @@ const Index = () => {
         <HeroSection />
         <EventCategories />
         <FeaturedEvents />
-        <Leaderboard />
+        <LeaderboardComponent />
         <GamesSection />
       </main>
       <ChatbotWidget />
