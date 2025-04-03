@@ -8,8 +8,11 @@ import Leaderboard from '@/components/Leaderboard';
 import GamesSection from '@/components/GamesSection';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

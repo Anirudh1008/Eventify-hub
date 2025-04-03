@@ -2,8 +2,11 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Calendar, Search, ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
       <div className="container px-4">
@@ -18,11 +21,18 @@ const HeroSection = () => {
               Connect with events, colleges, and opportunities tailored just for you. Discover, participate, and level up your career.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button className="h-12 px-6 rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white flex items-center gap-2">
+              <Button 
+                className="h-12 px-6 rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white flex items-center gap-2"
+                onClick={() => navigate('/dashboard')}
+              >
                 <Sparkles className="h-5 w-5" />
                 <span>Get AI Recommendations</span>
               </Button>
-              <Button variant="outline" className="h-12 px-6 rounded-full flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                className="h-12 px-6 rounded-full flex items-center gap-2"
+                onClick={() => navigate('/events')}
+              >
                 <Search className="h-5 w-5" />
                 <span>Browse Events</span>
               </Button>
