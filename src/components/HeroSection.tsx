@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Search, BookOpen, Award } from "lucide-react";
+import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Calendar } from "lucide-react";
 
 const HeroSection = () => {
   const navigate = useNavigate();
