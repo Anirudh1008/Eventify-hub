@@ -5,15 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Menu, X, Search, Moon, Sun, User } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
-import { 
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const isMobile = useIsMobile();
@@ -53,46 +44,39 @@ const Navbar = () => {
                 Home
               </a>
               <a 
-                href="#events" 
+                href="#" 
                 onClick={() => handleNavigate('/events')} 
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                Events
+                Explore
               </a>
               <a 
-                href="#challenges" 
+                href="#" 
                 onClick={() => handleNavigate('/challenges')} 
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 Challenges
               </a>
               <a 
-                href="#badges" 
-                onClick={() => handleNavigate('/badges')} 
+                href="#games" 
+                onClick={() => handleNavigate('/games')} 
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                Badges
+                Games
               </a>
               <a 
-                href="#leaderboard" 
+                href="#" 
                 onClick={() => handleNavigate('/leaderboard')} 
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 Leaderboard
               </a>
               <a 
-                href="#games" 
-                onClick={() => handleNavigate('/games')} 
+                href="#" 
+                onClick={() => handleNavigate('/contact')} 
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                Games 🎮
-              </a>
-              <a 
-                href="#organizers" 
-                onClick={() => handleNavigate('/organizers')} 
-                className="text-sm font-medium hover:text-primary transition-colors"
-              >
-                Organizers
+                Contact
               </a>
             </nav>
           )}
@@ -167,46 +151,39 @@ const Navbar = () => {
                 Home
               </a>
               <a 
-                href="#events" 
+                href="#" 
                 onClick={() => handleNavigate('/events')}
                 className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
               >
-                Events
+                Explore
               </a>
               <a 
-                href="#challenges" 
+                href="#" 
                 onClick={() => handleNavigate('/challenges')}
                 className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
               >
                 Challenges
               </a>
               <a 
-                href="#badges" 
-                onClick={() => handleNavigate('/badges')}
+                href="#" 
+                onClick={() => handleNavigate('/games')}
                 className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
               >
-                Badges
+                Games
               </a>
               <a 
-                href="#leaderboard" 
+                href="#" 
                 onClick={() => handleNavigate('/leaderboard')}
                 className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
               >
                 Leaderboard
               </a>
               <a 
-                href="#games" 
-                onClick={() => handleNavigate('/games')}
+                href="#" 
+                onClick={() => handleNavigate('/contact')}
                 className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
               >
-                Games 🎮
-              </a>
-              <a 
-                href="#organizers" 
-                onClick={() => handleNavigate('/organizers')}
-                className="px-2 py-1.5 text-sm font-medium hover:text-primary transition-colors"
-              >
-                Organizers
+                Contact
               </a>
             </nav>
             <div className="flex flex-col gap-2">
@@ -227,16 +204,6 @@ const Navbar = () => {
           </div>
         </div>
       )}
-
-      {/* Floating CTA for organizers */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          onClick={() => navigate('/create-event')}
-          className="rounded-full animate-pulse-glow bg-gradient-to-r from-eventify-purple to-eventify-blue text-white shadow-lg"
-        >
-          📢 List Your Event
-        </Button>
-      </div>
     </header>
   );
 };

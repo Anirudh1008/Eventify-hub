@@ -3,8 +3,11 @@ import React from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  
   return (
     <footer className="bg-background border-t border-border">
       <div className="container px-4 py-12">
@@ -37,11 +40,11 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Home</a></li>
-              <li><a href="#events" className="text-muted-foreground hover:text-primary transition-colors">Events</a></li>
-              <li><a href="#challenges" className="text-muted-foreground hover:text-primary transition-colors">Challenges</a></li>
-              <li><a href="#badges" className="text-muted-foreground hover:text-primary transition-colors">Badges</a></li>
-              <li><a href="#games" className="text-muted-foreground hover:text-primary transition-colors">Games</a></li>
+              <li><a onClick={() => navigate('/')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Home</a></li>
+              <li><a onClick={() => navigate('/events')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Explore</a></li>
+              <li><a onClick={() => navigate('/challenges')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Challenges</a></li>
+              <li><a onClick={() => navigate('/games')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Games</a></li>
+              <li><a onClick={() => navigate('/leaderboard')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Leaderboard</a></li>
             </ul>
           </div>
           
@@ -52,7 +55,7 @@ const Footer = () => {
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms & Conditions</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
+              <li><a onClick={() => navigate('/contact')} className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">Contact Us</a></li>
             </ul>
           </div>
           
@@ -77,8 +80,12 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Eventify. All rights reserved.
           </p>
           
-          <Button variant="outline" className="rounded-full">
-            Post an Event
+          <Button 
+            variant="outline" 
+            className="rounded-full"
+            onClick={() => navigate('/create-event')}
+          >
+            List Your Event
           </Button>
         </div>
       </div>

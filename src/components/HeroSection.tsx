@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Calendar, Search, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
@@ -13,29 +13,42 @@ const HeroSection = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Find & Join the Best 
-              <span className="shimmer-text block"> Events & Hackathons</span>
-              <span className="text-foreground"> with One Click! 🚀</span>
+              Discover Events That Match Your 
+              <span className="shimmer-text block"> Skills & Interests</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg md:mx-0 mx-auto">
-              Connect with events, colleges, and opportunities tailored just for you. Discover, participate, and level up your career.
+              Eventify connects students with hackathons, workshops, cultural fests, and competitions from colleges across India. All personalized for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button 
                 className="h-12 px-6 rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white flex items-center gap-2"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/signup')}
               >
-                <Sparkles className="h-5 w-5" />
-                <span>Get AI Recommendations</span>
+                <span>Get Started Free</span>
+                <ArrowRight className="h-5 w-5" />
               </Button>
               <Button 
                 variant="outline" 
                 className="h-12 px-6 rounded-full flex items-center gap-2"
-                onClick={() => navigate('/events')}
+                onClick={() => navigate('/create-event')}
               >
-                <Search className="h-5 w-5" />
-                <span>Browse Events</span>
+                <span>List Your Event</span>
               </Button>
+            </div>
+            
+            <div className="flex flex-wrap justify-center md:justify-start gap-8 mt-12">
+              <div className="text-center">
+                <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-eventify-purple to-eventify-blue bg-clip-text text-transparent">1000+</p>
+                <p className="text-sm text-muted-foreground">Events</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-eventify-purple to-eventify-blue bg-clip-text text-transparent">500+</p>
+                <p className="text-sm text-muted-foreground">Colleges</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-eventify-purple to-eventify-blue bg-clip-text text-transparent">10K+</p>
+                <p className="text-sm text-muted-foreground">Students</p>
+              </div>
             </div>
           </div>
           <div className="w-full md:w-1/2 relative h-64 md:h-auto">
