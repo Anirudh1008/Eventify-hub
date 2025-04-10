@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles } from "lucide-react";
