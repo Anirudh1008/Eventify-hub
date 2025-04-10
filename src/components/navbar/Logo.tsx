@@ -1,11 +1,13 @@
 
 import React from 'react';
+import { Sparkles } from 'lucide-react';
 
 const Logo = () => {
   return (
-    <div className="flex items-center">
-      <h1 className="text-2xl font-bold bg-gradient-to-r from-eventify-purple to-eventify-blue bg-clip-text text-transparent animate-text-shimmer">
-        EVENTIFY
+    <div className="flex items-center gap-1.5">
+      <Sparkles className="h-5 w-5 text-eventify-purple" />
+      <h1 className="text-xl font-bold text-eventify-purple">
+        Eventify
       </h1>
     </div>
   );
