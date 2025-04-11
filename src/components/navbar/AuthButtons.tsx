@@ -11,17 +11,10 @@ const AuthButtons = () => {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-sm transition-all duration-300"
         onClick={() => navigate('/login')}
       >
-        Log In
-      </Button>
-      <Button 
-        size="sm" 
-        className="rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-        onClick={() => navigate('/signup')}
-      >
-        Sign Up
+        Account
       </Button>
     </div>
   );
