@@ -14,7 +14,7 @@ const AuthButtons = () => {
         className="rounded-full dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-sm transition-all duration-300"
         onClick={() => navigate('/login')}
       >
-        Account
+        Profile
       </Button>
     </div>
   );
