@@ -4,8 +4,7 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import EventCategories from '@/components/EventCategories';
 import FeaturedEvents from '@/components/FeaturedEvents';
-import LeaderboardComponent from '@/components/Leaderboard';
-import GamesSection from '@/components/GamesSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
 
@@ -17,8 +16,7 @@ const Index = () => {
         <HeroSection />
         <EventCategories />
         <FeaturedEvents />
-        <LeaderboardComponent />
-        <GamesSection />
+        <TestimonialsSection />
       </main>
       <ChatbotWidget />
       <Footer />
