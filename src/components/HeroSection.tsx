@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import OrganizersSection from "@/components/OrganizersSection";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -30,18 +31,12 @@ const HeroSection = () => {
             
             <div className="flex flex-wrap justify-center gap-4 mb-16">
               <Button 
-                className="h-12 px-6 rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-                onClick={() => navigate('/signup')}
-              >
-                Get Started Free
-              </Button>
-              <Button 
                 variant="outline" 
                 className="h-12 px-6 rounded-full flex items-center gap-2"
-                onClick={() => navigate('/create-event')}
+                onClick={() => navigate('/organizers')}
               >
                 <Calendar className="h-4 w-4" />
-                <span>List Your Event</span>
+                <span>For Organizers</span>
               </Button>
             </div>
             
@@ -170,6 +165,9 @@ const HeroSection = () => {
           </div>
         </div>
       </section>
+
+      {/* For Organizers Section */}
+      <OrganizersSection />
     </div>
   );
 };

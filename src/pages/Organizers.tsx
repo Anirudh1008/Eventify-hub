@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
+import OrganizersSection from '@/components/OrganizersSection';
 
 const Organizers = () => {
   return (
@@ -15,10 +16,7 @@ const Organizers = () => {
             Create and manage events, track registrations, and engage with participants
           </p>
           
-          {/* Organizers content will be added here */}
-          <div className="flex items-center justify-center h-64">
-            <p className="text-muted-foreground">Organizers content coming soon!</p>
-          </div>
+          <OrganizersSection />
         </div>
       </main>
       <ChatbotWidget />
