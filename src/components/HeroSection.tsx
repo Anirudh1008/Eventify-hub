@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles } from "lucide-react";
+import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles, ListPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
@@ -36,6 +36,15 @@ const HeroSection = () => {
               >
                 <Calendar className="h-4 w-4" />
                 <span>For Organizers</span>
+              </Button>
+              
+              <Button 
+                variant="default" 
+                className="h-12 px-6 rounded-full flex items-center gap-2"
+                onClick={() => navigate('/create-event')}
+              >
+                <ListPlus className="h-4 w-4" />
+                <span>List your Event</span>
               </Button>
             </div>
             
