@@ -2,6 +2,7 @@
 import React from 'react';
 import { Calendar, Code, Music, Trophy, Palette, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
@@ -37,6 +38,12 @@ const categories = [
 ];
 
 const EventCategories = () => {
+  const navigate = useNavigate();
+
+  const handleExplore = (categoryName: string) => {
+    navigate(`/events?category=${categoryName.toLowerCase()}`);
+  };
+
   return (
     <section id="categories" className="py-16 bg-secondary/50">
       <div className="container px-4">
@@ -57,7 +64,11 @@ const EventCategories = () => {
                 {category.icon}
               </div>
               <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-              <Button variant="link" className="mt-2 flex items-center gap-1">
+              <Button 
+                variant="link" 
+                className="mt-2 flex items-center gap-1"
+                onClick={() => handleExplore(category.name)}
+              >
                 <span>Explore</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
