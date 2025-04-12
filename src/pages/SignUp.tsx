@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, UserPlus, Github, Mail } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Select,
   SelectContent,
@@ -18,16 +19,26 @@ import {
 } from "@/components/ui/select";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, signUp } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [userType, setUserType] = useState('student');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // If user is already logged in, redirect to profile
+    if (user) {
+      navigate('/profile');
+    }
+  }, [user, navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,16 +62,23 @@ const SignUp = () => {
     }
     
     setIsLoading(true);
+    setError(null);
     
-    // Simulate signup API call
-    setTimeout(() => {
+    const { error } = await signUp(email, password, { username: name });
+    
+    setIsLoading(false);
+    
+    if (error) {
+      setError(error.message);
       toast({
-        title: "Account created",
-        description: "You have successfully created an account",
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
       });
-      setIsLoading(false);
-      navigate('/dashboard');
-    }, 1500);
+      return;
+    }
+    
+    // Note: Redirection is handled by the auth state change in AuthContext
   };
 
   return (
@@ -76,6 +94,11 @@ const SignUp = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>

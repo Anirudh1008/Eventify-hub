@@ -2,16 +2,30 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, LogOut, UserRound, Mail, School, Star } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/contexts/AuthContext';
 
-const SidebarProfile = () => {
+interface Profile {
+  id: string;
+  username: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+}
+
+interface SidebarProfileProps {
+  profile: Profile | null;
+}
+
+const SidebarProfile = ({ profile }: SidebarProfileProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Logged Out",
       description: "You have been successfully logged out",
@@ -25,19 +39,19 @@ const SidebarProfile = () => {
         <Card className="glass-card border border-primary/20 shadow-lg overflow-hidden">
           <CardHeader className="flex flex-col items-center text-center pb-2">
             <Avatar className="h-24 w-24 mb-4 ring-4 ring-primary/20 bg-gradient-to-br from-primary/80 to-eventify-blue/80">
-              <AvatarImage src="" alt="User" />
+              <AvatarImage src={profile?.avatar_url || ""} alt={profile?.username || "User"} />
               <AvatarFallback className="text-2xl bg-gradient-to-br from-primary/80 to-eventify-blue/80 text-white">
-                AJ
+                {profile?.username?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
               </AvatarFallback>
             </Avatar>
-            <CardTitle className="text-xl font-bold">Alex Johnson</CardTitle>
+            <CardTitle className="text-xl font-bold">{profile?.username || user?.email?.split('@')[0] || "User"}</CardTitle>
             <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mt-1">
               <School className="h-3.5 w-3.5" />
               <span>State University</span>
             </div>
             <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mt-1">
               <Mail className="h-3.5 w-3.5" />
-              <span>alex@university.edu</span>
+              <span>{user?.email || "user@example.com"}</span>
             </div>
             <div className="font-medium mt-2 flex items-center gap-1">
               <UserRound className="h-3.5 w-3.5 text-primary" />
@@ -58,7 +72,7 @@ const SidebarProfile = () => {
               variant="ghost" 
               size="sm" 
               className="w-full justify-start text-muted-foreground hover:text-foreground gap-2 hover:bg-primary/5"
-              onClick={handleLogout}
+              onClick={() => navigate('/profile')}
             >
               <Settings className="h-4 w-4" />
               <span>Settings</span>
