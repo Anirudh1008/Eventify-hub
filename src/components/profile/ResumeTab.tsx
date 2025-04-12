@@ -3,13 +3,20 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Eye, Trash2 } from "lucide-react";
+import { Upload, Eye, Trash2, FileText, FileCode, Sparkles } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const ResumeTab = () => {
+interface ResumeTabProps {
+  onResumeUpload: (fileUploaded: boolean, extractedSkills?: string[]) => void;
+}
+
+const ResumeTab = ({ onResumeUpload }: ResumeTabProps) => {
   const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanComplete, setScanComplete] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -28,6 +35,26 @@ const ResumeTab = () => {
       const droppedFile = e.dataTransfer.files[0];
       handleFileSelection(droppedFile);
     }
+  };
+
+  // Mock function to simulate resume parsing
+  const parseResume = (file: File): Promise<string[]> => {
+    return new Promise((resolve) => {
+      // Simulate API delay
+      setTimeout(() => {
+        // Return mock extracted skills based on file type
+        if (file.name.includes('web') || file.name.includes('front')) {
+          resolve(['React', 'TypeScript', 'NextJS', 'Tailwind CSS', 'UI/UX']);
+        } else if (file.name.includes('data') || file.name.includes('science')) {
+          resolve(['Python', 'Data Science', 'Machine Learning', 'SQL', 'Pandas']);
+        } else if (file.name.includes('back') || file.name.includes('full')) {
+          resolve(['Node.js', 'Express', 'MongoDB', 'API Design', 'Authentication']);
+        } else {
+          // Default skills
+          resolve(['JavaScript', 'HTML', 'CSS', 'Git', 'Problem Solving']);
+        }
+      }, 2000);
+    });
   };
 
   const handleFileSelection = (selectedFile: File) => {
@@ -52,9 +79,24 @@ const ResumeTab = () => {
     }
     
     setFile(selectedFile);
+    setIsScanning(true);
+    setScanComplete(false);
+
     toast({
       title: "Resume Uploaded",
       description: `Successfully uploaded ${selectedFile.name}`,
+    });
+
+    // Simulate resume parsing
+    parseResume(selectedFile).then(extractedSkills => {
+      setIsScanning(false);
+      setScanComplete(true);
+      onResumeUpload(true, extractedSkills);
+      
+      toast({
+        title: "Resume Scanned",
+        description: `Found ${extractedSkills.length} skills in your resume`,
+      });
     });
   };
 
@@ -66,6 +108,9 @@ const ResumeTab = () => {
 
   const handleRemoveFile = () => {
     setFile(null);
+    setScanComplete(false);
+    onResumeUpload(false);
+    
     toast({
       description: "Resume removed",
     });
@@ -117,51 +162,66 @@ const ResumeTab = () => {
             </div>
           </div>
         ) : (
-          <div className="border rounded-lg p-4 animate-scale-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-primary/10 rounded-md">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-8 w-8 text-primary" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4 animate-scale-in">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-primary/10 rounded-md">
+                    {file.name.endsWith('.pdf') ? (
+                      <FileText className="h-8 w-8 text-primary" />
+                    ) : (
+                      <FileCode className="h-8 w-8 text-primary" />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-medium">{file.name}</h4>
+                    <p className="text-xs text-muted-foreground">
+                      {(file.size / 1024).toFixed(2)} KB
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleViewFile} 
+                    className="text-muted-foreground hover:text-foreground"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-                    />
-                  </svg>
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleRemoveFile}
+                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-medium">{file.name}</h4>
-                  <p className="text-xs text-muted-foreground">
-                    {(file.size / 1024).toFixed(2)} KB
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleViewFile} 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleRemoveFile}
-                  className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
               </div>
             </div>
+            
+            {isScanning && (
+              <Alert className="bg-primary/5 border border-primary/20">
+                <div className="flex items-center">
+                  <Sparkles className="h-4 w-4 text-primary mr-2 animate-pulse" />
+                  <AlertDescription>
+                    Scanning your resume for skills and experience...
+                  </AlertDescription>
+                </div>
+              </Alert>
+            )}
+            
+            {scanComplete && (
+              <Alert className="bg-success/5 border border-success/20">
+                <div className="flex items-center">
+                  <Sparkles className="h-4 w-4 text-success mr-2" />
+                  <AlertDescription>
+                    Resume scan complete! Check the Skills tab to see extracted skills.
+                  </AlertDescription>
+                </div>
+              </Alert>
+            )}
           </div>
         )}
         

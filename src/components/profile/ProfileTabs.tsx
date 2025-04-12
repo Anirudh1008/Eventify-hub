@@ -7,9 +7,31 @@ import AIRecommendations from './AIRecommendations';
 
 const ProfileTabs = () => {
   const [skills, setSkills] = useState<string[]>(['JavaScript', 'React', 'UI/UX']);
+  const [interests, setInterests] = useState<string[]>(['Hackathons', 'Web3', 'AI']);
+  const [experienceLevel, setExperienceLevel] = useState<string>('Intermediate');
+  const [resumeUploaded, setResumeUploaded] = useState<boolean>(false);
+  const [showAIRecommendations, setShowAIRecommendations] = useState<boolean>(false);
+  const [extractedSkills, setExtractedSkills] = useState<string[]>([]);
 
   const handleSkillsChange = (updatedSkills: string[]) => {
     setSkills(updatedSkills);
+  };
+
+  const handleInterestsChange = (updatedInterests: string[]) => {
+    setInterests(updatedInterests);
+  };
+
+  const handleExperienceLevelChange = (level: string) => {
+    setExperienceLevel(level);
+  };
+
+  const handleResumeUpload = (fileUploaded: boolean, extractedSkills: string[] = []) => {
+    setResumeUploaded(fileUploaded);
+    if (fileUploaded && extractedSkills.length > 0) {
+      setExtractedSkills(extractedSkills);
+      // Show AI recommendations after successful resume upload
+      setShowAIRecommendations(true);
+    }
   };
 
   return (
@@ -23,16 +45,30 @@ const ProfileTabs = () => {
         <TabsContent value="skills" className="space-y-4 animate-fade-in">
           <SkillsTab 
             initialSkills={skills} 
-            onSkillsChange={handleSkillsChange} 
+            initialInterests={interests}
+            experienceLevel={experienceLevel}
+            onSkillsChange={handleSkillsChange}
+            onInterestsChange={handleInterestsChange}
+            onExperienceLevelChange={handleExperienceLevelChange}
+            extractedSkills={extractedSkills}
           />
         </TabsContent>
         
         <TabsContent value="resume" className="mt-4 animate-fade-in">
-          <ResumeTab />
+          <ResumeTab 
+            onResumeUpload={handleResumeUpload}
+          />
         </TabsContent>
       </Tabs>
       
-      <AIRecommendations skills={skills} />
+      <AIRecommendations 
+        skills={skills} 
+        interests={interests}
+        experienceLevel={experienceLevel}
+        resumeUploaded={resumeUploaded}
+        showAIRecommendations={showAIRecommendations}
+        setShowAIRecommendations={setShowAIRecommendations}
+      />
     </div>
   );
 };
