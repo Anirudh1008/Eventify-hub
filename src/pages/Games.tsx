@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
@@ -7,9 +7,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Code, Cpu, Lightbulb, Palette, ChevronRight } from "lucide-react";
+import { Code, Cpu, Lightbulb, Palette, ChevronRight, X } from "lucide-react";
+import { Dialog, DialogContent, DialogClose, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Games = () => {
+  const [selectedGame, setSelectedGame] = useState<PlayableGame | null>(null);
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -30,117 +33,49 @@ const Games = () => {
             
             <TabsContent value="cse" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <GameCard 
-                  title="Coding Challenge" 
-                  description="Solve coding problems with increasing difficulty levels. Test your algorithms and data structures knowledge."
-                  icon={<Code className="h-6 w-6" />}
-                  color="bg-blue-600"
-                  level="All Levels"
-                  players={1250}
-                />
-                <GameCard 
-                  title="Debug Master" 
-                  description="Find and fix bugs in code snippets against the clock. Sharpen your debugging skills."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-purple-600"
-                  level="Intermediate"
-                  players={980}
-                />
-                <GameCard 
-                  title="Algo Race" 
-                  description="Optimize algorithms to solve problems in the minimum time and space complexity."
-                  icon={<Lightbulb className="h-6 w-6" />}
-                  color="bg-amber-600"
-                  level="Advanced"
-                  players={645}
-                />
+                {cseGames.map((game) => (
+                  <PlayableGameCard 
+                    key={game.id}
+                    game={game}
+                    onPlay={() => setSelectedGame(game)}
+                  />
+                ))}
               </div>
             </TabsContent>
             
             <TabsContent value="ece" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <GameCard 
-                  title="Circuit Simulator" 
-                  description="Design and troubleshoot electronic circuits. Build complex systems and test their functionality."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-red-600"
-                  level="All Levels"
-                  players={860}
-                />
-                <GameCard 
-                  title="Signal Processing" 
-                  description="Analyze and manipulate signals to achieve desired outputs. Apply filters and transformations."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-green-600"
-                  level="Intermediate"
-                  players={540}
-                />
-                <GameCard 
-                  title="Embedded Systems" 
-                  description="Program microcontrollers to solve real-world problems in a virtual environment."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-blue-600"
-                  level="Advanced"
-                  players={420}
-                />
+                {eceGames.map((game) => (
+                  <PlayableGameCard 
+                    key={game.id}
+                    game={game}
+                    onPlay={() => setSelectedGame(game)}
+                  />
+                ))}
               </div>
             </TabsContent>
             
             <TabsContent value="mech" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <GameCard 
-                  title="CAD Challenge" 
-                  description="Design mechanical parts based on specifications. Compete for the most efficient designs."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-orange-600"
-                  level="All Levels"
-                  players={510}
-                />
-                <GameCard 
-                  title="Structural Analysis" 
-                  description="Test structures under various loads and conditions. Optimize for strength and material usage."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-teal-600"
-                  level="Intermediate"
-                  players={320}
-                />
-                <GameCard 
-                  title="Thermodynamics Puzzle" 
-                  description="Solve complex thermodynamic system problems with efficiency constraints."
-                  icon={<Cpu className="h-6 w-6" />}
-                  color="bg-indigo-600"
-                  level="Advanced"
-                  players={280}
-                />
+                {mechGames.map((game) => (
+                  <PlayableGameCard 
+                    key={game.id}
+                    game={game}
+                    onPlay={() => setSelectedGame(game)}
+                  />
+                ))}
               </div>
             </TabsContent>
             
             <TabsContent value="design" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <GameCard 
-                  title="UI/UX Battle" 
-                  description="Redesign problematic interfaces against the clock. Get feedback from AI and peers."
-                  icon={<Palette className="h-6 w-6" />}
-                  color="bg-pink-600"
-                  level="All Levels"
-                  players={720}
-                />
-                <GameCard 
-                  title="Design Sprint" 
-                  description="Complete a full design thinking process for a given problem in a limited time."
-                  icon={<Palette className="h-6 w-6" />}
-                  color="bg-violet-600"
-                  level="Intermediate"
-                  players={480}
-                />
-                <GameCard 
-                  title="Brand Builder" 
-                  description="Create a complete brand identity including logo, color scheme, and style guide."
-                  icon={<Palette className="h-6 w-6" />}
-                  color="bg-emerald-600"
-                  level="Advanced"
-                  players={350}
-                />
+                {designGames.map((game) => (
+                  <PlayableGameCard 
+                    key={game.id}
+                    game={game}
+                    onPlay={() => setSelectedGame(game)}
+                  />
+                ))}
               </div>
             </TabsContent>
           </Tabs>
@@ -160,46 +95,242 @@ const Games = () => {
           </div>
         </div>
       </main>
+      
+      <GamePlayDialog 
+        game={selectedGame} 
+        isOpen={selectedGame !== null}
+        onClose={() => setSelectedGame(null)} 
+      />
+      
       <ChatbotWidget />
       <Footer />
     </div>
   );
 };
 
-interface GameCardProps {
+interface PlayableGame {
+  id: number;
   title: string;
   description: string;
   icon: React.ReactNode;
   color: string;
   level: string;
   players: number;
+  embedUrl: string;
+  category: string;
 }
 
-const GameCard = ({ title, description, icon, color, level, players }: GameCardProps) => {
+interface PlayableGameCardProps {
+  game: PlayableGame;
+  onPlay: () => void;
+}
+
+const PlayableGameCard = ({ game, onPlay }: PlayableGameCardProps) => {
   return (
     <Card className="glass-card hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
       <CardHeader>
-        <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center text-white`}>
-          {icon}
+        <div className={`w-12 h-12 rounded-lg ${game.color} flex items-center justify-center text-white`}>
+          {game.icon}
         </div>
         <div className="flex items-center justify-between mt-4">
-          <CardTitle>{title}</CardTitle>
-          <Badge variant="outline">{level}</Badge>
+          <CardTitle>{game.title}</CardTitle>
+          <Badge variant="outline">{game.level}</Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-muted-foreground">{description}</CardDescription>
+        <CardDescription className="text-muted-foreground">{game.description}</CardDescription>
         <div className="mt-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{players.toLocaleString()}</span> players
+          <span className="font-medium text-foreground">{game.players.toLocaleString()}</span> players
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white">
+        <Button 
+          className="w-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
+          onClick={onPlay}
+        >
           Play Now
         </Button>
       </CardFooter>
     </Card>
   );
 };
+
+interface GamePlayDialogProps {
+  game: PlayableGame | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const GamePlayDialog = ({ game, isOpen, onClose }: GamePlayDialogProps) => {
+  if (!game) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] p-0">
+        <DialogHeader className="p-4 flex flex-row items-center justify-between">
+          <DialogTitle>{game.title}</DialogTitle>
+          <DialogClose asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogClose>
+        </DialogHeader>
+        <div className="aspect-video w-full border-t">
+          <iframe 
+            src={game.embedUrl} 
+            className="w-full h-full" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen
+          ></iframe>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Game data with embed URLs for playable games
+const cseGames: PlayableGame[] = [
+  {
+    id: 1,
+    title: "Coding Challenge",
+    description: "Solve coding problems with increasing difficulty levels. Test your algorithms and data structures knowledge.",
+    icon: <Code className="h-6 w-6" />,
+    color: "bg-blue-600",
+    level: "All Levels",
+    players: 1250,
+    embedUrl: "https://www.crazygames.com/embed/programming-games-online",
+    category: "CS/IT"
+  },
+  {
+    id: 2,
+    title: "Debug Master",
+    description: "Find and fix bugs in code snippets against the clock. Sharpen your debugging skills.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-purple-600",
+    level: "Intermediate",
+    players: 980,
+    embedUrl: "https://www.crazygames.com/embed/code-combat",
+    category: "CS/IT"
+  },
+  {
+    id: 3,
+    title: "Algo Race",
+    description: "Optimize algorithms to solve problems in the minimum time and space complexity.",
+    icon: <Lightbulb className="h-6 w-6" />,
+    color: "bg-amber-600",
+    level: "Advanced",
+    players: 645,
+    embedUrl: "https://www.crazygames.com/embed/lightbot",
+    category: "CS/IT"
+  }
+];
+
+const eceGames: PlayableGame[] = [
+  {
+    id: 4,
+    title: "Circuit Simulator",
+    description: "Design and troubleshoot electronic circuits. Build complex systems and test their functionality.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-red-600",
+    level: "All Levels",
+    players: 860,
+    embedUrl: "https://www.crazygames.com/embed/the-electric-box",
+    category: "ECE/EEE"
+  },
+  {
+    id: 5,
+    title: "Signal Processing",
+    description: "Analyze and manipulate signals to achieve desired outputs. Apply filters and transformations.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-green-600",
+    level: "Intermediate",
+    players: 540,
+    embedUrl: "https://www.crazygames.com/embed/circuit-box",
+    category: "ECE/EEE"
+  },
+  {
+    id: 6,
+    title: "Embedded Systems",
+    description: "Program microcontrollers to solve real-world problems in a virtual environment.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-blue-600",
+    level: "Advanced",
+    players: 420,
+    embedUrl: "https://www.crazygames.com/embed/electronic-repair-simulator",
+    category: "ECE/EEE"
+  }
+];
+
+const mechGames: PlayableGame[] = [
+  {
+    id: 7,
+    title: "CAD Challenge",
+    description: "Design mechanical parts based on specifications. Compete for the most efficient designs.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-orange-600",
+    level: "All Levels",
+    players: 510,
+    embedUrl: "https://www.crazygames.com/embed/bridge-builder",
+    category: "Mechanical"
+  },
+  {
+    id: 8,
+    title: "Structural Analysis",
+    description: "Test structures under various loads and conditions. Optimize for strength and material usage.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-teal-600",
+    level: "Intermediate",
+    players: 320,
+    embedUrl: "https://www.crazygames.com/embed/bridge-constructor",
+    category: "Mechanical"
+  },
+  {
+    id: 9,
+    title: "Thermodynamics Puzzle",
+    description: "Solve complex thermodynamic system problems with efficiency constraints.",
+    icon: <Cpu className="h-6 w-6" />,
+    color: "bg-indigo-600",
+    level: "Advanced",
+    players: 280,
+    embedUrl: "https://www.crazygames.com/embed/perfect-balance",
+    category: "Mechanical"
+  }
+];
+
+const designGames: PlayableGame[] = [
+  {
+    id: 10,
+    title: "UI/UX Battle",
+    description: "Redesign problematic interfaces against the clock. Get feedback from AI and peers.",
+    icon: <Palette className="h-6 w-6" />,
+    color: "bg-pink-600",
+    level: "All Levels",
+    players: 720,
+    embedUrl: "https://www.crazygames.com/embed/draw-together",
+    category: "Design"
+  },
+  {
+    id: 11,
+    title: "Design Sprint",
+    description: "Complete a full design thinking process for a given problem in a limited time.",
+    icon: <Palette className="h-6 w-6" />,
+    color: "bg-violet-600",
+    level: "Intermediate",
+    players: 480,
+    embedUrl: "https://www.crazygames.com/embed/gartic-io",
+    category: "Design"
+  },
+  {
+    id: 12,
+    title: "Brand Builder",
+    description: "Create a complete brand identity including logo, color scheme, and style guide.",
+    icon: <Palette className="h-6 w-6" />,
+    color: "bg-emerald-600",
+    level: "Advanced",
+    players: 350,
+    embedUrl: "https://www.crazygames.com/embed/super-sketch",
+    category: "Design"
+  }
+];
 
 export default Games;
