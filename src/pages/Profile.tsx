@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -8,10 +8,25 @@ import ProfileSection from '@/components/profile/ProfileSection';
 import { Button } from '@/components/ui/button';
 import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Add this effect to verify Supabase connection
+    const checkConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('users').select('*').limit(1);
+        console.log('Supabase connection test:', { success: !error, data, error });
+      } catch (err) {
+        console.error('Error testing Supabase connection:', err);
+      }
+    };
+    
+    checkConnection();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -1,6 +1,9 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Spinner } from '@/components/ui/spinner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,6 +15,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectToLogin = true 
 }) => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Log Supabase authentication state to verify integration
+    console.log('ProtectedRoute - Supabase auth state:', { user, loading });
+    
+    if (!loading && !user && redirectToLogin) {
+      navigate('/login', { replace: true });
+    }
+  }, [user, loading, redirectToLogin, navigate]);
 
   if (loading) {
     return (
@@ -21,11 +34,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // If redirectToLogin is false, we allow access to the page even if not logged in
   if (!user && redirectToLogin) {
-    // We'll handle the redirect in the component itself rather than using Navigate
-    // This allows us to keep the URL in the address bar
-    window.location.href = "/login";
     return null;
   }
 
