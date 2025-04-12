@@ -70,10 +70,10 @@ const AuthButtons = () => {
         variant="default" 
         size="sm" 
         className="rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-        onClick={() => navigate('/signup')}
+        onClick={() => navigate('/profile')}
       >
         <User className="h-4 w-4 mr-1" />
-        Sign Up
+        Profile
       </Button>
     </div>
   );

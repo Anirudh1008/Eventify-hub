@@ -47,14 +47,7 @@ const App = () => (
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/contact" element={<Contact />} />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/payment/:eventId" element={<PaymentPage />} />
             <Route path="/registration-success/:eventId" element={<RegistrationSuccess />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
