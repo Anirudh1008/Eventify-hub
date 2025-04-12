@@ -18,6 +18,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { useToast } from '@/hooks/use-toast';
 import ChatbotWidget from '@/components/ChatbotWidget';
+import RegisterEventModal from '@/components/RegisterEventModal';
 
 const mockEvents = [
   {
@@ -91,6 +92,7 @@ const mockEvents = [
     badges: ["Hackathon", "Coding", "Tech Skills"],
     featured: true,
     participants: 850,
+    price: 499,
   },
 ];
 
@@ -100,6 +102,8 @@ const EventDetails = () => {
   const { toast } = useToast();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   
   const event = mockEvents.find(event => event.id === id);
   
@@ -120,11 +124,8 @@ const EventDetails = () => {
   }
 
   const handleRegister = () => {
-    setIsRegistered(true);
-    toast({
-      title: "Registration Successful!",
-      description: `You have registered for ${event.title}. Check your email for details.`,
-    });
+    setSelectedEvent(event);
+    setShowRegisterModal(true);
   };
 
   const toggleSave = () => {
@@ -141,6 +142,15 @@ const EventDetails = () => {
       title: "Link Copied",
       description: "Event link copied to clipboard!",
     });
+  };
+
+  const closeRegisterModal = () => {
+    setShowRegisterModal(false);
+  };
+
+  const handleProceedToPayment = (eventId) => {
+    navigate(`/payment/${eventId}`);
+    setShowRegisterModal(false);
   };
 
   return (
@@ -424,6 +434,15 @@ const EventDetails = () => {
       </main>
       <ChatbotWidget />
       <Footer />
+      
+      {/* Registration Modal */}
+      {showRegisterModal && selectedEvent && (
+        <RegisterEventModal 
+          event={selectedEvent} 
+          onClose={closeRegisterModal}
+          onProceedToPayment={handleProceedToPayment}
+        />
+      )}
     </div>
   );
 };
