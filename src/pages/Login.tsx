@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { LogIn, ArrowRight, Github, Mail, UserPlus } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ProfileSection from '@/components/ProfileSection';
+import ProfileSection from '@/components/profile/ProfileSection';
 
 const Login = () => {
   const navigate = useNavigate();
