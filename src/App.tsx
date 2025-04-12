@@ -19,6 +19,8 @@ import EventDetails from "./pages/EventDetails";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
+import PaymentPage from "./pages/PaymentPage";
+import RegistrationSuccess from "./pages/RegistrationSuccess";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,8 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/payment/:eventId" element={<PaymentPage />} />
+          <Route path="/registration-success/:eventId" element={<RegistrationSuccess />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, MapPin, Users, ArrowRight, Star, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import RegisterEventModal from "@/components/RegisterEventModal";
 
 const featuredEvents = [
   {
@@ -17,6 +18,8 @@ const featuredEvents = [
     category: "Tech",
     featured: true,
     participants: 850,
+    price: 499,
+    description: "Join the biggest national hackathon of the year! Teams of up to 4 students will compete to build innovative solutions for real-world problems. This 48-hour coding marathon will test your skills, creativity, and teamwork.",
   },
   {
     id: 2,
@@ -28,6 +31,8 @@ const featuredEvents = [
     category: "Academic",
     featured: false,
     participants: 320,
+    price: 299,
+    description: "Tackle real-world business challenges from top companies. Present your solutions to industry experts and win exciting prizes. Great opportunity to network with professionals and showcase your analytical skills.",
   },
   {
     id: 3,
@@ -39,34 +44,38 @@ const featuredEvents = [
     category: "Arts",
     featured: false,
     participants: 500,
+    price: 399,
+    description: "A three-day celebration of design in all its forms - UI/UX, graphic design, industrial design, and more. Attend workshops by design leaders, showcase your portfolio, and connect with creative minds from across the country.",
   },
 ];
 
 const FeaturedEvents = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-  const handleRegisterNow = (eventId: number, eventTitle: string) => {
-    toast({
-      title: "Registration in Progress",
-      description: `You're being registered for ${eventTitle}. Please check your email for confirmation.`,
-    });
-    
-    // Simulate registration completion after 2 seconds
-    setTimeout(() => {
-      toast({
-        title: "Registration Successful!",
-        description: `You have successfully registered for ${eventTitle}.`,
-      });
-    }, 2000);
+  const handleRegisterNow = (event, e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setSelectedEvent(event);
+    setShowRegisterModal(true);
   };
 
-  const handleLearnMore = (eventId: number) => {
+  const handleLearnMore = (eventId) => {
     navigate(`/events/${eventId}`);
   };
 
   const handleViewAllEvents = () => {
     navigate('/events');
+  };
+  
+  const closeRegisterModal = () => {
+    setShowRegisterModal(false);
+  };
+
+  const handleProceedToPayment = (eventId) => {
+    navigate(`/payment/${eventId}`);
+    setShowRegisterModal(false);
   };
 
   return (
@@ -144,7 +153,7 @@ const FeaturedEvents = () => {
                   <Button 
                     size="sm" 
                     className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-                    onClick={() => handleRegisterNow(event.id, event.title)}
+                    onClick={(e) => handleRegisterNow(event, e)}
                   >
                     Register Now
                   </Button>
@@ -161,6 +170,14 @@ const FeaturedEvents = () => {
           ))}
         </div>
       </div>
+
+      {showRegisterModal && selectedEvent && (
+        <RegisterEventModal 
+          event={selectedEvent} 
+          onClose={closeRegisterModal}
+          onProceedToPayment={handleProceedToPayment}
+        />
+      )}
     </section>
   );
 };
