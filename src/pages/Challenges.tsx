@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
@@ -18,6 +19,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import RegisterEventModal from '@/components/RegisterEventModal';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Define challenge types
 interface Challenge {
@@ -32,6 +36,7 @@ interface Challenge {
   status: 'New' | 'Trending' | 'Closing Soon' | 'Popular' | '';
   rules: string[];
   prizes: string;
+  price: number; // Adding price for registration
 }
 
 const challenges: Challenge[] = [
@@ -51,7 +56,8 @@ const challenges: Challenge[] = [
       "Include dark and light mode versions",
       "Design must be responsive and mobile-friendly"
     ],
-    prizes: "₹25,000 cash prize + Internship opportunity"
+    prizes: "₹25,000 cash prize + Internship opportunity",
+    price: 499
   },
   {
     id: 2,
@@ -69,7 +75,8 @@ const challenges: Challenge[] = [
       "Use of open-source libraries is allowed",
       "Final submission must include source code and demo video"
     ],
-    prizes: "₹50,000 for first place, ₹25,000 for second place, ₹10,000 for third place"
+    prizes: "₹50,000 for first place, ₹25,000 for second place, ₹10,000 for third place",
+    price: 699
   },
   {
     id: 3,
@@ -87,7 +94,8 @@ const challenges: Challenge[] = [
       "Minimum resolution of 3000x2000 pixels",
       "Minor editing allowed, but no composite images"
     ],
-    prizes: "Latest DSLR camera + Feature in college magazine"
+    prizes: "Latest DSLR camera + Feature in college magazine",
+    price: 299
   },
   {
     id: 4,
@@ -105,7 +113,8 @@ const challenges: Challenge[] = [
       "Include SWOT analysis and financial projections",
       "Cite all references in APA format"
     ],
-    prizes: "Paid internship opportunity with corporate sponsor + ₹15,000 cash prize"
+    prizes: "Paid internship opportunity with corporate sponsor + ₹15,000 cash prize",
+    price: 399
   },
   {
     id: 5,
@@ -123,7 +132,8 @@ const challenges: Challenge[] = [
       "Maximum 5 submissions per person",
       "Must relate to college or student life"
     ],
-    prizes: "Latest iPad + 1-year premium subscription to design tools"
+    prizes: "Latest iPad + 1-year premium subscription to design tools",
+    price: 199
   },
   {
     id: 6,
@@ -141,7 +151,8 @@ const challenges: Challenge[] = [
       "Topics will be announced 1 week before",
       "7 minutes for opening statements, 3 minutes for rebuttals"
     ],
-    prizes: "₹20,000 cash prize + Trophy + Certificate"
+    prizes: "₹20,000 cash prize + Trophy + Certificate",
+    price: 349
   }
 ];
 
@@ -155,6 +166,10 @@ const statusColors = {
 
 const Challenges = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user } = useAuth();
   
   const openChallengeDetails = (challenge: Challenge) => {
     setSelectedChallenge(challenge);
@@ -162,6 +177,32 @@ const Challenges = () => {
   
   const closeChallengeDetails = () => {
     setSelectedChallenge(null);
+  };
+
+  const handleRegisterNow = () => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to register for this challenge",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
+
+    if (selectedChallenge) {
+      setShowRegisterModal(true);
+      closeChallengeDetails();
+    }
+  };
+
+  const handleCloseRegisterModal = () => {
+    setShowRegisterModal(false);
+  };
+
+  const handleProceedToPayment = (challengeId: number) => {
+    setShowRegisterModal(false);
+    navigate(`/payment/${challengeId}`);
   };
   
   return (
@@ -265,7 +306,13 @@ const Challenges = () => {
                 <div className="text-sm text-muted-foreground">
                   {selectedChallenge.participants} students participating
                 </div>
-                <Button className="bg-eventify-purple hover:bg-eventify-dark-purple text-white">
+                <Button 
+                  className="bg-eventify-purple hover:bg-eventify-dark-purple text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRegisterNow();
+                  }}
+                >
                   Register Now
                 </Button>
               </div>
@@ -273,6 +320,25 @@ const Challenges = () => {
           </DialogContent>
         )}
       </Dialog>
+      
+      {/* Registration Modal */}
+      {showRegisterModal && selectedChallenge && (
+        <RegisterEventModal 
+          event={{
+            id: selectedChallenge.id,
+            title: selectedChallenge.title,
+            description: selectedChallenge.description,
+            organizer: `${selectedChallenge.category} Department`,
+            date: `Deadline: ${selectedChallenge.deadline}`,
+            location: "Online",
+            participants: selectedChallenge.participants,
+            price: selectedChallenge.price,
+            image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740&auto=format&fit=crop"
+          }}
+          onClose={handleCloseRegisterModal}
+          onProceedToPayment={handleProceedToPayment}
+        />
+      )}
       
       <ChatbotWidget />
       <Footer />
