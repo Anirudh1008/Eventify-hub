@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ChatbotWidget from '@/components/ChatbotWidget';
@@ -7,11 +7,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Code, Cpu, Lightbulb, Palette, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogClose, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Code, Cpu, Lightbulb, Palette, ChevronRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Games = () => {
-  const [selectedGame, setSelectedGame] = useState<PlayableGame | null>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handlePlayGame = (gameId: number) => {
+    navigate(`/gameplay/${gameId}`);
+    toast({
+      title: "Loading game",
+      description: "Preparing your game experience..."
+    });
+  };
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -37,7 +46,7 @@ const Games = () => {
                   <PlayableGameCard 
                     key={game.id}
                     game={game}
-                    onPlay={() => setSelectedGame(game)}
+                    onPlay={() => handlePlayGame(game.id)}
                   />
                 ))}
               </div>
@@ -49,7 +58,7 @@ const Games = () => {
                   <PlayableGameCard 
                     key={game.id}
                     game={game}
-                    onPlay={() => setSelectedGame(game)}
+                    onPlay={() => handlePlayGame(game.id)}
                   />
                 ))}
               </div>
@@ -61,7 +70,7 @@ const Games = () => {
                   <PlayableGameCard 
                     key={game.id}
                     game={game}
-                    onPlay={() => setSelectedGame(game)}
+                    onPlay={() => handlePlayGame(game.id)}
                   />
                 ))}
               </div>
@@ -73,7 +82,7 @@ const Games = () => {
                   <PlayableGameCard 
                     key={game.id}
                     game={game}
-                    onPlay={() => setSelectedGame(game)}
+                    onPlay={() => handlePlayGame(game.id)}
                   />
                 ))}
               </div>
@@ -86,7 +95,7 @@ const Games = () => {
               Earn points for every game you play. Top performers are featured on our global leaderboard and can win prizes!
             </p>
             <Button 
-              onClick={() => window.location.href = '/leaderboard'} 
+              onClick={() => navigate('/leaderboard')} 
               className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
             >
               View Leaderboard
@@ -95,12 +104,6 @@ const Games = () => {
           </div>
         </div>
       </main>
-      
-      <GamePlayDialog 
-        game={selectedGame} 
-        isOpen={selectedGame !== null}
-        onClose={() => setSelectedGame(null)} 
-      />
       
       <ChatbotWidget />
       <Footer />
@@ -155,40 +158,6 @@ const PlayableGameCard = ({ game, onPlay }: PlayableGameCardProps) => {
   );
 };
 
-interface GamePlayDialogProps {
-  game: PlayableGame | null;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const GamePlayDialog = ({ game, isOpen, onClose }: GamePlayDialogProps) => {
-  if (!game) return null;
-
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] p-0">
-        <DialogHeader className="p-4 flex flex-row items-center justify-between">
-          <DialogTitle>{game.title}</DialogTitle>
-          <DialogClose asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogClose>
-        </DialogHeader>
-        <div className="aspect-video w-full border-t">
-          <iframe 
-            src={game.embedUrl} 
-            className="w-full h-full" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowFullScreen
-          ></iframe>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-// Game data with embed URLs for playable games
 const cseGames: PlayableGame[] = [
   {
     id: 1,

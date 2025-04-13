@@ -5,8 +5,36 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
-const RegisterEventModal = ({ event, onClose, onProceedToPayment, isProcessing = false }) => {
+// Define the proper types for props
+interface EventData {
+  id: number;
+  title: string;
+  description: string;
+  organizer: string;
+  date: string;
+  location: string;
+  participants: number;
+  price: number;
+  image: string;
+  category?: string;
+}
+
+interface RegisterEventModalProps {
+  event: EventData;
+  onClose: () => void;
+  onProceedToPayment: (eventId: number) => void;
+  isProcessing?: boolean;
+}
+
+const RegisterEventModal: React.FC<RegisterEventModalProps> = ({ 
+  event, 
+  onClose, 
+  onProceedToPayment, 
+  isProcessing = false 
+}) => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,7 +42,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment, isProcessing =
     teamSize: 1,
   });
   
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -22,9 +50,25 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment, isProcessing =
     }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Form validation
+    if (!formData.name || !formData.email || !formData.phoneNumber) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // If all validations pass, proceed to payment
     onProceedToPayment(event.id);
+    toast({
+      title: "Registration Submitted",
+      description: "Redirecting to payment..."
+    });
   };
 
   return (
@@ -47,7 +91,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment, isProcessing =
               <div>
                 <h3 className="text-lg font-bold">{event.title}</h3>
                 <p className="text-muted-foreground mb-2">{event.organizer}</p>
-                <Badge>{event.category}</Badge>
+                <Badge>{event.category || 'Event'}</Badge>
                 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3">
                   <div className="flex items-center gap-2">

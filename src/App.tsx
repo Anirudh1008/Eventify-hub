@@ -15,6 +15,7 @@ import Challenges from "./pages/Challenges";
 import Badges from "./pages/Badges";
 import Leaderboard from "./pages/Leaderboard";
 import Games from "./pages/Games";
+import GamePlay from "./pages/GamePlay";
 import Organizers from "./pages/Organizers";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetails from "./pages/EventDetails";
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/badges" element={<Badges />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/games" element={<Games />} />
+            <Route path="/gameplay/:gameId" element={<GamePlay />} />
             <Route path="/organizers" element={<Organizers />} />
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/dashboard" element={<Dashboard />} />
