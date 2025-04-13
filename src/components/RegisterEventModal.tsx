@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
+const RegisterEventModal = ({ event, onClose, onProceedToPayment, isProcessing = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,7 +32,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
       <div className="bg-background rounded-lg w-full max-w-lg max-h-[90vh] overflow-auto">
         <div className="sticky top-0 bg-background z-10 flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">Register for Event</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} disabled={isProcessing}>
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -88,6 +88,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
                   onChange={handleInputChange} 
                   required 
                   placeholder="Enter your full name"
+                  disabled={isProcessing}
                 />
               </div>
               
@@ -101,6 +102,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
                   onChange={handleInputChange} 
                   required 
                   placeholder="Enter your email address"
+                  disabled={isProcessing}
                 />
               </div>
               
@@ -113,6 +115,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
                   onChange={handleInputChange} 
                   required 
                   placeholder="Enter your phone number"
+                  disabled={isProcessing}
                 />
               </div>
               
@@ -124,6 +127,7 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
                   value={formData.teamSize} 
                   onChange={handleInputChange}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  disabled={isProcessing}
                 >
                   <option value="1">Individual (1 Person)</option>
                   <option value="2">Team of 2</option>
@@ -134,14 +138,18 @@ const RegisterEventModal = ({ event, onClose, onProceedToPayment }) => {
             </div>
             
             <div className="flex justify-between items-center mt-6">
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button type="button" variant="outline" onClick={onClose} disabled={isProcessing}>
                 Cancel
               </Button>
               <Button 
                 type="submit"
                 className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
+                disabled={isProcessing}
               >
-                Proceed to Payment (₹{event.price})
+                {isProcessing ? 
+                  "Processing..." : 
+                  `Proceed to Payment (₹${event.price})`
+                }
               </Button>
             </div>
           </form>

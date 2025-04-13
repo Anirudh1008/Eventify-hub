@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -22,6 +22,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import RegisterEventModal from '@/components/RegisterEventModal';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 // Define challenge types
 interface Challenge {
@@ -167,9 +168,24 @@ const statusColors = {
 const Challenges = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [registrationInProgress, setRegistrationInProgress] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  
+  // Check if the user is logged in on component mount
+  useEffect(() => {
+    const checkUserAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        console.log("User not logged in");
+      } else {
+        console.log("User logged in:", data.session.user);
+      }
+    };
+    
+    checkUserAuth();
+  }, []);
   
   const openChallengeDetails = (challenge: Challenge) => {
     setSelectedChallenge(challenge);
@@ -186,6 +202,10 @@ const Challenges = () => {
         description: "Please login to register for this challenge",
         variant: "destructive"
       });
+      // Store the challenge ID in sessionStorage to redirect back after login
+      if (selectedChallenge) {
+        sessionStorage.setItem('pendingChallengeRegistration', selectedChallenge.id.toString());
+      }
       navigate('/login');
       return;
     }
@@ -201,9 +221,38 @@ const Challenges = () => {
   };
 
   const handleProceedToPayment = (challengeId: number) => {
-    setShowRegisterModal(false);
-    navigate(`/payment/${challengeId}`);
+    setRegistrationInProgress(true);
+    toast({
+      title: "Processing Registration",
+      description: "Please wait while we prepare your registration..."
+    });
+    
+    // Simulate processing time
+    setTimeout(() => {
+      setShowRegisterModal(false);
+      setRegistrationInProgress(false);
+      navigate(`/payment/${challengeId}`);
+    }, 1000);
   };
+  
+  // Check if there's a pending registration after login
+  useEffect(() => {
+    if (user) {
+      const pendingChallengeId = sessionStorage.getItem('pendingChallengeRegistration');
+      if (pendingChallengeId) {
+        // Find the challenge
+        const challenge = challenges.find(c => c.id === parseInt(pendingChallengeId));
+        if (challenge) {
+          sessionStorage.removeItem('pendingChallengeRegistration');
+          setSelectedChallenge(challenge);
+          // Slight delay to ensure UI is ready
+          setTimeout(() => {
+            handleRegisterNow();
+          }, 500);
+        }
+      }
+    }
+  }, [user]);
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -337,6 +386,7 @@ const Challenges = () => {
           }}
           onClose={handleCloseRegisterModal}
           onProceedToPayment={handleProceedToPayment}
+          isProcessing={registrationInProgress}
         />
       )}
       
