@@ -195,7 +195,12 @@ const Challenges = () => {
     setSelectedChallenge(null);
   };
 
-  const handleRegisterNow = () => {
+  const handleRegisterNow = (challenge: Challenge, e?: React.MouseEvent) => {
+    // Prevent event bubbling if event is provided
+    if (e) {
+      e.stopPropagation();
+    }
+    
     if (!user) {
       toast({
         title: "Login Required",
@@ -203,15 +208,15 @@ const Challenges = () => {
         variant: "destructive"
       });
       // Store the challenge ID in sessionStorage to redirect back after login
-      if (selectedChallenge) {
-        sessionStorage.setItem('pendingChallengeRegistration', selectedChallenge.id.toString());
-      }
+      sessionStorage.setItem('pendingChallengeRegistration', challenge.id.toString());
       navigate('/login');
       return;
     }
 
-    if (selectedChallenge) {
-      setShowRegisterModal(true);
+    setSelectedChallenge(challenge);
+    setShowRegisterModal(true);
+    // Close detail modal if open
+    if (e) {
       closeChallengeDetails();
     }
   };
@@ -244,10 +249,8 @@ const Challenges = () => {
         const challenge = challenges.find(c => c.id === parseInt(pendingChallengeId));
         if (challenge) {
           sessionStorage.removeItem('pendingChallengeRegistration');
-          setSelectedChallenge(challenge);
-          // Slight delay to ensure UI is ready
           setTimeout(() => {
-            handleRegisterNow();
+            handleRegisterNow(challenge);
           }, 500);
         }
       }
@@ -298,9 +301,16 @@ const Challenges = () => {
                     <Badge variant="outline" className="text-xs">
                       {challenge.category}
                     </Badge>
-                    <span className="text-sm text-muted-foreground">
-                      {challenge.participants} participants
-                    </span>
+                    <Button 
+                      size="sm" 
+                      className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRegisterNow(challenge, e);
+                      }}
+                    >
+                      Register Now
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -356,10 +366,10 @@ const Challenges = () => {
                   {selectedChallenge.participants} students participating
                 </div>
                 <Button 
-                  className="bg-eventify-purple hover:bg-eventify-dark-purple text-white"
+                  className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleRegisterNow();
+                    handleRegisterNow(selectedChallenge, e);
                   }}
                 >
                   Register Now
@@ -382,7 +392,8 @@ const Challenges = () => {
             location: "Online",
             participants: selectedChallenge.participants,
             price: selectedChallenge.price,
-            image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740&auto=format&fit=crop",
+            category: selectedChallenge.category
           }}
           onClose={handleCloseRegisterModal}
           onProceedToPayment={handleProceedToPayment}
