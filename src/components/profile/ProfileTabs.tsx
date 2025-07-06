@@ -38,7 +38,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
         const { data, error } = await supabase
           .from('users')
           .select('skills, interests')
-          .eq('id', user.id)
+          .eq('id', user.id.toString())
           .single();
           
         if (error) {
@@ -85,7 +85,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
         const { error } = await supabase
           .from('users')
           .update({ skills: JSON.stringify(updatedSkills) })
-          .eq('id', user.id);
+          .eq('id', user.id.toString());
           
         if (error) throw error;
       } catch (error: any) {
@@ -106,7 +106,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
         const { error } = await supabase
           .from('users')
           .update({ interests: JSON.stringify(updatedInterests) })
-          .eq('id', user.id);
+          .eq('id', user.id.toString());
           
         if (error) throw error;
       } catch (error: any) {
@@ -135,7 +135,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
           const { error } = await supabase
             .from('users')
             .update({ resume_url: 'uploaded' })
-            .eq('id', user.id);
+            .eq('id', user.id.toString());
             
           if (error) throw error;
         } catch (error: any) {

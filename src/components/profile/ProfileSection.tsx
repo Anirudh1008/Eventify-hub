@@ -28,7 +28,7 @@ const ProfileSection = () => {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', user.id)
+          .eq('id', user.id.toString())
           .single();
 
         if (error) {
