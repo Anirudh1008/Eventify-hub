@@ -46,10 +46,10 @@ export const authAPI = {
     return response;
   },
 
-  register: async (email: string, password: string, username?: string) => {
+  register: async (email: string, password: string, username?: string, college_id?: number) => {
     const response = await apiRequest('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ email, password, username }),
+      body: JSON.stringify({ email, password, username, college_id }),
     });
     
     if (response.access_token) {
@@ -68,6 +68,13 @@ export const authAPI = {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
   }
+};
+
+// Colleges API
+export const collegesAPI = {
+  getAll: () => apiRequest('/colleges'),
+  getById: (id: number) => apiRequest(`/colleges/${id}`),
+  getEvents: (id: number) => apiRequest(`/colleges/${id}/events`),
 };
 
 // Events API
@@ -96,4 +103,10 @@ export const paymentsAPI = {
       body: JSON.stringify({ event_id: eventId, challenge_id: challengeId }),
     });
   }
+};
+
+// Admin API
+export const adminAPI = {
+  getPendingColleges: () => apiRequest('/admin/colleges/pending'),
+  approveCollege: (id: number) => apiRequest(`/admin/colleges/${id}/approve`, { method: 'POST' }),
 };

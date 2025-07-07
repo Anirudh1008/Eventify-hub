@@ -1,77 +1,28 @@
 
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import stripe
 import os
+from models import db, User, College, Event, Challenge, Registration
+from seed_data import seed_all
 
 app = Flask(__name__)
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventify.db'  # Use PostgreSQL in production
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///eventify.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'your-secret-key-change-in-production'  # Change this!
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key-change-in-production')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)
 
 # Initialize extensions
-db = SQLAlchemy(app)
+db.init_app(app)
 jwt = JWTManager(app)
-CORS(app, origins=["http://localhost:8080"])  # Update with your frontend URL
+CORS(app, origins=["http://localhost:8080", "http://localhost:5173"])
 
 # Stripe configuration
-stripe.api_key = "sk_test_your_stripe_secret_key"  # Add your Stripe secret key
-
-# Database Models
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-    
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-class Event(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    organizer = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.String(50), nullable=False)
-    location = db.Column(db.String(200), nullable=False)
-    price = db.Column(db.Float, default=0.0)
-    image = db.Column(db.Text)
-    category = db.Column(db.String(50), nullable=False)
-    participants = db.Column(db.Integer, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-class Challenge(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    short_description = db.Column(db.Text)
-    category = db.Column(db.String(50), nullable=False)
-    deadline = db.Column(db.String(50), nullable=False)
-    participants = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(20), default='')
-    rules = db.Column(db.Text)  # JSON string
-    prizes = db.Column(db.Text)
-    price = db.Column(db.Float, default=0.0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-class Registration(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=True)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=True)
-    payment_status = db.Column(db.String(20), default='pending')
-    registered_at = db.Column(db.DateTime, default=datetime.utcnow)
+stripe.api_key = os.getenv('STRIPE_SECRET_KEY', 'sk_test_your_stripe_secret_key')
 
 # Authentication Routes
 @app.route('/api/auth/register', methods=['POST'])
@@ -81,11 +32,12 @@ def register():
         email = data.get('email')
         username = data.get('username', email.split('@')[0])
         password = data.get('password')
+        college_id = data.get('college_id')
         
         if User.query.filter_by(email=email).first():
             return jsonify({'error': 'Email already exists'}), 400
         
-        user = User(email=email, username=username)
+        user = User(email=email, username=username, college_id=college_id)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -96,7 +48,8 @@ def register():
             'user': {
                 'id': user.id,
                 'email': user.email,
-                'username': user.username
+                'username': user.username,
+                'college_id': user.college_id
             }
         })
     except Exception as e:
@@ -117,7 +70,8 @@ def login():
                 'user': {
                     'id': user.id,
                     'email': user.email,
-                    'username': user.username
+                    'username': user.username,
+                    'college_id': user.college_id
                 }
             })
         
@@ -133,13 +87,52 @@ def get_current_user():
     return jsonify({
         'id': user.id,
         'email': user.email,
-        'username': user.username
+        'username': user.username,
+        'college_id': user.college_id
     })
 
-# Events Routes
-@app.route('/api/events', methods=['GET'])
-def get_events():
-    events = Event.query.all()
+# College Routes
+@app.route('/api/colleges', methods=['GET'])
+def get_colleges():
+    colleges = College.query.filter_by(approved=True).all()
+    return jsonify([{
+        'id': college.id,
+        'name': college.name,
+        'short_name': college.short_name,
+        'location': college.location,
+        'state': college.state,
+        'website': college.website,
+        'email': college.email,
+        'phone': college.phone,
+        'logo_url': college.logo_url,
+        'description': college.description,
+        'established_year': college.established_year,
+        'college_type': college.college_type,
+        'affiliation': college.affiliation
+    } for college in colleges])
+
+@app.route('/api/colleges/<int:college_id>', methods=['GET'])
+def get_college(college_id):
+    college = College.query.get_or_404(college_id)
+    return jsonify({
+        'id': college.id,
+        'name': college.name,
+        'short_name': college.short_name,
+        'location': college.location,
+        'state': college.state,
+        'website': college.website,
+        'email': college.email,
+        'phone': college.phone,
+        'logo_url': college.logo_url,
+        'description': college.description,
+        'established_year': college.established_year,
+        'college_type': college.college_type,
+        'affiliation': college.affiliation
+    })
+
+@app.route('/api/colleges/<int:college_id>/events', methods=['GET'])
+def get_college_events(college_id):
+    events = Event.query.filter_by(college_id=college_id, approved=True).all()
     return jsonify([{
         'id': event.id,
         'title': event.title,
@@ -150,7 +143,27 @@ def get_events():
         'price': event.price,
         'image': event.image,
         'category': event.category,
-        'participants': event.participants
+        'participants': event.participants,
+        'college_id': event.college_id
+    } for event in events])
+
+# Events Routes (Updated with college integration)
+@app.route('/api/events', methods=['GET'])
+def get_events():
+    events = Event.query.filter_by(approved=True).all()
+    return jsonify([{
+        'id': event.id,
+        'title': event.title,
+        'description': event.description,
+        'organizer': event.organizer,
+        'date': event.date,
+        'location': event.location,
+        'price': event.price,
+        'image': event.image,
+        'category': event.category,
+        'participants': event.participants,
+        'college_id': event.college_id,
+        'college_name': event.college.name if event.college else None
     } for event in events])
 
 @app.route('/api/events/<int:event_id>', methods=['GET'])
@@ -166,13 +179,15 @@ def get_event(event_id):
         'price': event.price,
         'image': event.image,
         'category': event.category,
-        'participants': event.participants
+        'participants': event.participants,
+        'college_id': event.college_id,
+        'college_name': event.college.name if event.college else None
     })
 
-# Challenges Routes
+# Challenges Routes (Updated with college integration)
 @app.route('/api/challenges', methods=['GET'])
 def get_challenges():
-    challenges = Challenge.query.all()
+    challenges = Challenge.query.filter_by(approved=True).all()
     return jsonify([{
         'id': challenge.id,
         'title': challenge.title,
@@ -184,10 +199,34 @@ def get_challenges():
         'status': challenge.status,
         'rules': challenge.rules.split('|') if challenge.rules else [],
         'prizes': challenge.prizes,
-        'price': challenge.price
+        'price': challenge.price,
+        'college_id': challenge.college_id,
+        'college_name': challenge.college.name if challenge.college else None
     } for challenge in challenges])
 
-# Payment Routes
+# Admin Routes (for managing colleges and approvals)
+@app.route('/api/admin/colleges/pending', methods=['GET'])
+@jwt_required()
+def get_pending_colleges():
+    colleges = College.query.filter_by(approved=False).all()
+    return jsonify([{
+        'id': college.id,
+        'name': college.name,
+        'short_name': college.short_name,
+        'location': college.location,
+        'state': college.state,
+        'created_at': college.created_at.isoformat()
+    } for college in colleges])
+
+@app.route('/api/admin/colleges/<int:college_id>/approve', methods=['POST'])
+@jwt_required()
+def approve_college(college_id):
+    college = College.query.get_or_404(college_id)
+    college.approved = True
+    db.session.commit()
+    return jsonify({'success': True})
+
+# Payment Routes (keep existing)
 @app.route('/api/payments/create-session', methods=['POST'])
 @jwt_required()
 def create_payment_session():
@@ -211,7 +250,7 @@ def create_payment_session():
                     'product_data': {
                         'name': item.title,
                     },
-                    'unit_amount': int(item.price * 100),  # Convert to paise
+                    'unit_amount': int(item.price * 100),
                 },
                 'quantity': 1,
             }],
@@ -253,73 +292,14 @@ def register_for_event():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Initialize database
-@app.before_first_request
-def create_tables():
+# Database initialization
+with app.app_context():
     db.create_all()
     
-    # Add sample data if tables are empty
-    if Event.query.count() == 0:
-        sample_events = [
-            Event(
-                title="Tech Conference 2024",
-                description="Annual technology conference featuring latest innovations",
-                organizer="Tech University",
-                date="March 15, 2024",
-                location="Tech Center, Mumbai",
-                price=2999,
-                image="https://images.unsplash.com/photo-1540575467063-178a50c2df87",
-                category="Technology",
-                participants=156
-            ),
-            Event(
-                title="Design Workshop",
-                description="Interactive design workshop for UI/UX enthusiasts",
-                organizer="Design Institute",
-                date="April 20, 2024", 
-                location="Design Hub, Bangalore",
-                price=1999,
-                image="https://images.unsplash.com/photo-1559136555-9303baea8ebd",
-                category="Design",
-                participants=89
-            )
-        ]
-        
-        for event in sample_events:
-            db.session.add(event)
-    
-    if Challenge.query.count() == 0:
-        sample_challenges = [
-            Challenge(
-                title="UI Design Contest",
-                description="Create stunning user interfaces for mobile apps",
-                short_description="Design beautiful and functional UI for our new student portal app",
-                category="Design",
-                deadline="June 15, 2025",
-                participants=178,
-                status="New",
-                rules="Submit designs in Figma|Design must include at least 5 screens|Include dark and light mode versions",
-                prizes="₹25,000 cash prize + Internship opportunity",
-                price=499
-            ),
-            Challenge(
-                title="Coding Sprint",
-                description="48-hour hackathon to build innovative solutions",
-                short_description="Join our coding sprint to build solutions addressing campus problems",
-                category="Development",
-                deadline="May 20, 2025",
-                participants=342,
-                status="Trending",
-                rules="Teams must have 2-3 members|All code must be written during the 48-hour period|Use of open-source libraries is allowed",
-                prizes="₹50,000 for first place, ₹25,000 for second place",
-                price=699
-            )
-        ]
-        
-        for challenge in sample_challenges:
-            db.session.add(challenge)
-    
-    db.session.commit()
+    # Check if we need to seed data
+    if College.query.count() == 0:
+        print("No colleges found, seeding database...")
+        seed_all()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
