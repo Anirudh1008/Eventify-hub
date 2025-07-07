@@ -5,22 +5,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
 import { useLocation } from 'react-router-dom';
+import { useToast } from "@/hooks/use-toast";
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [showApiInput, setShowApiInput] = useState(false);
   const [chatHistory, setChatHistory] = useState([
     { 
       type: 'bot', 
-      text: 'Hello! I\'m your AI assistant. How can I help you find events or answer questions today?' 
+      text: 'Hello! I\'m your AI assistant powered by OpenAI. How can I help you find events, answer questions, or assist with your learning journey today?' 
     }
   ]);
   const location = useLocation();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Load API key from localStorage
+    const savedApiKey = localStorage.getItem('openai_api_key');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    } else {
+      setShowApiInput(true);
+    }
+  }, []);
 
   useEffect(() => {
     // Generate context-aware greeting when the route changes
-    if (isOpen) {
+    if (isOpen && apiKey) {
       const path = location.pathname;
       let contextMessage = '';
       
@@ -32,6 +46,8 @@ const ChatbotWidget = () => {
         contextMessage = "Looking for interesting events? I can recommend events based on your interests or help you with registration.";
       } else if (path.includes('/games')) {
         contextMessage = "Exploring our interactive games? Let me know if you want recommendations for your skill level or need help with the gameplay.";
+      } else if (path.includes('/colleges')) {
+        contextMessage = "Searching for colleges? I can help you find the right institution based on your preferences and career goals.";
       }
       
       if (contextMessage) {
@@ -39,54 +55,116 @@ const ChatbotWidget = () => {
           setChatHistory(prev => [...prev, { type: 'bot', text: contextMessage }]);
           setIsTyping(false);
         }, 1000);
+      } else {
+        setIsTyping(false);
       }
     }
-  }, [location.pathname, isOpen]);
+  }, [location.pathname, isOpen, apiKey]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const saveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('openai_api_key', apiKey.trim());
+      setShowApiInput(false);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved securely in your browser.",
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+    if (!apiKey) {
+      setShowApiInput(true);
+      toast({
+        title: "API Key Required",
+        description: "Please enter your OpenAI API key to use the AI assistant.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Add user message to chat
-    setChatHistory([...chatHistory, { type: 'user', text: message }]);
+    const userMessage = { type: 'user', text: message };
+    setChatHistory(prev => [...prev, userMessage]);
     
     // Set typing indicator
     setIsTyping(true);
+    const currentMessage = message;
+    setMessage('');
     
-    // Determine response based on message content and current page
-    let botResponse = '';
-    const userMessage = message.toLowerCase();
-    const path = location.pathname;
-    
-    setTimeout(() => {
-      if (path.includes('/challenges')) {
-        if (userMessage.includes('register') || userMessage.includes('join') || userMessage.includes('sign up')) {
-          botResponse = "To register for a challenge, simply click on a challenge card to view details, then click the 'Register Now' button. You'll need to be logged in to complete the registration.";
-        } else if (userMessage.includes('deadline') || userMessage.includes('date')) {
-          botResponse = "Each challenge has its own deadline displayed on the card. Click on any challenge to see more details including rules and prizes.";
-        } else if (userMessage.includes('prize') || userMessage.includes('win')) {
-          botResponse = "Prizes vary for each challenge. They typically include cash rewards, internship opportunities, certificates, and tech gadgets. Click on a challenge to see specific prize details.";
-        } else {
-          botResponse = "If you're interested in a specific challenge, click on it to learn more about requirements, rules, and prizes. Is there anything specific you'd like to know about our challenges?";
-        }
-      } else if (userMessage.includes('login') || userMessage.includes('signup') || userMessage.includes('account')) {
-        botResponse = "You can create an account or log in by clicking the 'Login' button in the navigation bar. You'll need an account to register for events and challenges.";
-      } else if (userMessage.includes('payment') || userMessage.includes('cost') || userMessage.includes('price') || userMessage.includes('fee')) {
-        botResponse = "Event and challenge fees vary. The registration fee is displayed during the registration process. We accept all major credit cards for payment.";
-      } else {
-        botResponse = "I can help you find events based on your interests, assist with registration, or answer questions about our platform. What specifically are you looking for today?";
+    try {
+      // Call OpenAI API
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: `You are Eventify AI Assistant, a helpful AI assistant for a student platform called Eventify. 
+              The platform offers:
+              - Student events and competitions
+              - Interactive games for different engineering branches (CS/IT, ECE/EEE, Mechanical, Design)
+              - College information and recommendations
+              - Challenges and hackathons
+              - Learning resources and career guidance
+              
+              Current page context: ${location.pathname}
+              
+              Be helpful, friendly, and concise. Focus on helping students with their academic and career journey.`
+            },
+            {
+              role: 'user',
+              content: currentMessage
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
       }
+
+      const data = await response.json();
+      const botResponse = data.choices[0]?.message?.content || "I'm sorry, I couldn't process that request. Please try again.";
       
       // Add bot response to chat
       setChatHistory(prev => [...prev, { type: 'bot', text: botResponse }]);
+      
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      let errorMessage = "I'm having trouble connecting to my AI service right now. ";
+      
+      if (error.message.includes('401')) {
+        errorMessage += "Please check your API key and try again.";
+        setShowApiInput(true);
+      } else {
+        errorMessage += "Please try again in a moment.";
+      }
+      
+      setChatHistory(prev => [...prev, { type: 'bot', text: errorMessage }]);
+      
+      toast({
+        title: "AI Service Error",
+        description: "There was an issue with the AI service. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsTyping(false);
-    }, 1500);
-
-    setMessage('');
+    }
   };
 
   return (
@@ -115,8 +193,8 @@ const ChatbotWidget = () => {
                   <Zap className="h-4 w-4" />
                 </Avatar>
                 <div>
-                  <h3 className="font-medium">Eventify Assistant</h3>
-                  <p className="text-xs text-white/80">AI Powered</p>
+                  <h3 className="font-medium">Eventify AI Assistant</h3>
+                  <p className="text-xs text-white/80">Powered by OpenAI</p>
                 </div>
               </div>
               <Button 
@@ -129,6 +207,27 @@ const ChatbotWidget = () => {
               </Button>
             </div>
           </div>
+
+          {showApiInput && (
+            <div className="p-4 bg-yellow-50 border-b border-border">
+              <div className="text-sm mb-2">
+                <p className="font-medium text-yellow-800">OpenAI API Key Required</p>
+                <p className="text-yellow-700">Enter your API key to enable AI responses</p>
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  type="password"
+                  placeholder="sk-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="flex-1 text-sm"
+                />
+                <Button onClick={saveApiKey} size="sm">
+                  Save
+                </Button>
+              </div>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {chatHistory.map((chat, index) => (
@@ -164,14 +263,15 @@ const ChatbotWidget = () => {
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your question..."
+                placeholder="Ask me anything..."
                 className="flex-1 rounded-full"
+                disabled={isTyping}
               />
               <Button
                 type="submit"
                 size="icon"
                 className="rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-                disabled={isTyping}
+                disabled={isTyping || !message.trim()}
               >
                 <Send className="h-4 w-4" />
               </Button>

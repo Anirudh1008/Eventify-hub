@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -158,6 +159,7 @@ const PlayableGameCard = ({ game, onPlay }: PlayableGameCardProps) => {
   );
 };
 
+// Updated games with better working embed URLs
 const cseGames: PlayableGame[] = [
   {
     id: 1,
@@ -167,7 +169,7 @@ const cseGames: PlayableGame[] = [
     color: "bg-blue-600",
     level: "All Levels",
     players: 1250,
-    embedUrl: "https://www.crazygames.com/embed/programming-games-online",
+    embedUrl: "https://scratch.mit.edu/projects/embed/104/",
     category: "CS/IT"
   },
   {
@@ -178,7 +180,7 @@ const cseGames: PlayableGame[] = [
     color: "bg-purple-600",
     level: "Intermediate",
     players: 980,
-    embedUrl: "https://www.crazygames.com/embed/code-combat",
+    embedUrl: "https://www.khanacademy.org/computer-programming/new/pjs",
     category: "CS/IT"
   },
   {
@@ -189,7 +191,7 @@ const cseGames: PlayableGame[] = [
     color: "bg-amber-600",
     level: "Advanced",
     players: 645,
-    embedUrl: "https://www.crazygames.com/embed/lightbot",
+    embedUrl: "https://blockly-games.appspot.com/maze",
     category: "CS/IT"
   }
 ];
@@ -203,7 +205,7 @@ const eceGames: PlayableGame[] = [
     color: "bg-red-600",
     level: "All Levels",
     players: 860,
-    embedUrl: "https://www.crazygames.com/embed/the-electric-box",
+    embedUrl: "https://www.falstad.com/circuit/",
     category: "ECE/EEE"
   },
   {
@@ -214,7 +216,7 @@ const eceGames: PlayableGame[] = [
     color: "bg-green-600",
     level: "Intermediate",
     players: 540,
-    embedUrl: "https://www.crazygames.com/embed/circuit-box",
+    embedUrl: "https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_en.html",
     category: "ECE/EEE"
   },
   {
@@ -225,7 +227,7 @@ const eceGames: PlayableGame[] = [
     color: "bg-blue-600",
     level: "Advanced",
     players: 420,
-    embedUrl: "https://www.crazygames.com/embed/electronic-repair-simulator",
+    embedUrl: "https://www.tinkercad.com/circuits",
     category: "ECE/EEE"
   }
 ];
@@ -239,7 +241,7 @@ const mechGames: PlayableGame[] = [
     color: "bg-orange-600",
     level: "All Levels",
     players: 510,
-    embedUrl: "https://www.crazygames.com/embed/bridge-builder",
+    embedUrl: "https://www.onshape.com/en/",
     category: "Mechanical"
   },
   {
@@ -250,7 +252,7 @@ const mechGames: PlayableGame[] = [
     color: "bg-teal-600",
     level: "Intermediate",
     players: 320,
-    embedUrl: "https://www.crazygames.com/embed/bridge-constructor",
+    embedUrl: "https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html",
     category: "Mechanical"
   },
   {
@@ -261,7 +263,7 @@ const mechGames: PlayableGame[] = [
     color: "bg-indigo-600",
     level: "Advanced",
     players: 280,
-    embedUrl: "https://www.crazygames.com/embed/perfect-balance",
+    embedUrl: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
     category: "Mechanical"
   }
 ];
@@ -275,7 +277,7 @@ const designGames: PlayableGame[] = [
     color: "bg-pink-600",
     level: "All Levels",
     players: 720,
-    embedUrl: "https://www.crazygames.com/embed/draw-together",
+    embedUrl: "https://www.figma.com/figjam/",
     category: "Design"
   },
   {
@@ -286,7 +288,7 @@ const designGames: PlayableGame[] = [
     color: "bg-violet-600",
     level: "Intermediate",
     players: 480,
-    embedUrl: "https://www.crazygames.com/embed/gartic-io",
+    embedUrl: "https://www.canva.com/design/",
     category: "Design"
   },
   {
@@ -297,7 +299,7 @@ const designGames: PlayableGame[] = [
     color: "bg-emerald-600",
     level: "Advanced",
     players: 350,
-    embedUrl: "https://www.crazygames.com/embed/super-sketch",
+    embedUrl: "https://www.adobe.com/express/",
     category: "Design"
   }
 ];

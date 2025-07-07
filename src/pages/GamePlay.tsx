@@ -166,40 +166,28 @@ const GamePlay = () => {
   );
 };
 
-// Game data with embed URLs for playable games (copied from Games.tsx)
+// Updated game data with better working embed URLs
 const cseGames = [
   {
     id: 1,
     title: "Coding Challenge",
     description: "Solve coding problems with increasing difficulty levels. Test your algorithms and data structures knowledge.",
-    icon: <></>,
-    color: "bg-blue-600",
-    level: "All Levels",
+    embedUrl: "https://scratch.mit.edu/projects/embed/104/",
     players: 1250,
-    embedUrl: "https://www.crazygames.com/embed/programming-games-online",
-    category: "CS/IT"
   },
   {
     id: 2,
     title: "Debug Master",
     description: "Find and fix bugs in code snippets against the clock. Sharpen your debugging skills.",
-    icon: <></>,
-    color: "bg-purple-600",
-    level: "Intermediate",
+    embedUrl: "https://www.khanacademy.org/computer-programming/new/pjs",
     players: 980,
-    embedUrl: "https://www.crazygames.com/embed/code-combat",
-    category: "CS/IT"
   },
   {
     id: 3,
     title: "Algo Race",
     description: "Optimize algorithms to solve problems in the minimum time and space complexity.",
-    icon: <></>,
-    color: "bg-amber-600",
-    level: "Advanced",
+    embedUrl: "https://blockly-games.appspot.com/maze",
     players: 645,
-    embedUrl: "https://www.crazygames.com/embed/lightbot",
-    category: "CS/IT"
   }
 ];
 
@@ -208,34 +196,22 @@ const eceGames = [
     id: 4,
     title: "Circuit Simulator",
     description: "Design and troubleshoot electronic circuits. Build complex systems and test their functionality.",
-    icon: <></>,
-    color: "bg-red-600",
-    level: "All Levels",
+    embedUrl: "https://www.falstad.com/circuit/",
     players: 860,
-    embedUrl: "https://www.crazygames.com/embed/the-electric-box",
-    category: "ECE/EEE"
   },
   {
     id: 5,
     title: "Signal Processing",
     description: "Analyze and manipulate signals to achieve desired outputs. Apply filters and transformations.",
-    icon: <></>,
-    color: "bg-green-600",
-    level: "Intermediate",
+    embedUrl: "https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_en.html",
     players: 540,
-    embedUrl: "https://www.crazygames.com/embed/circuit-box",
-    category: "ECE/EEE"
   },
   {
     id: 6,
     title: "Embedded Systems",
     description: "Program microcontrollers to solve real-world problems in a virtual environment.",
-    icon: <></>,
-    color: "bg-blue-600",
-    level: "Advanced",
+    embedUrl: "https://www.tinkercad.com/circuits",
     players: 420,
-    embedUrl: "https://www.crazygames.com/embed/electronic-repair-simulator",
-    category: "ECE/EEE"
   }
 ];
 
@@ -244,34 +220,22 @@ const mechGames = [
     id: 7,
     title: "CAD Challenge",
     description: "Design mechanical parts based on specifications. Compete for the most efficient designs.",
-    icon: <></>,
-    color: "bg-orange-600",
-    level: "All Levels",
+    embedUrl: "https://www.onshape.com/en/",
     players: 510,
-    embedUrl: "https://www.crazygames.com/embed/bridge-builder",
-    category: "Mechanical"
   },
   {
     id: 8,
     title: "Structural Analysis",
     description: "Test structures under various loads and conditions. Optimize for strength and material usage.",
-    icon: <></>,
-    color: "bg-teal-600",
-    level: "Intermediate",
+    embedUrl: "https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html",
     players: 320,
-    embedUrl: "https://www.crazygames.com/embed/bridge-constructor",
-    category: "Mechanical"
   },
   {
     id: 9,
     title: "Thermodynamics Puzzle",
     description: "Solve complex thermodynamic system problems with efficiency constraints.",
-    icon: <></>,
-    color: "bg-indigo-600",
-    level: "Advanced",
+    embedUrl: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
     players: 280,
-    embedUrl: "https://www.crazygames.com/embed/perfect-balance",
-    category: "Mechanical"
   }
 ];
 
@@ -280,34 +244,22 @@ const designGames = [
     id: 10,
     title: "UI/UX Battle",
     description: "Redesign problematic interfaces against the clock. Get feedback from AI and peers.",
-    icon: <></>,
-    color: "bg-pink-600",
-    level: "All Levels",
+    embedUrl: "https://www.figma.com/figjam/",
     players: 720,
-    embedUrl: "https://www.crazygames.com/embed/draw-together",
-    category: "Design"
   },
   {
     id: 11,
     title: "Design Sprint",
     description: "Complete a full design thinking process for a given problem in a limited time.",
-    icon: <></>,
-    color: "bg-violet-600",
-    level: "Intermediate",
+    embedUrl: "https://www.canva.com/design/",
     players: 480,
-    embedUrl: "https://www.crazygames.com/embed/gartic-io",
-    category: "Design"
   },
   {
     id: 12,
     title: "Brand Builder",
     description: "Create a complete brand identity including logo, color scheme, and style guide.",
-    icon: <></>,
-    color: "bg-emerald-600",
-    level: "Advanced",
+    embedUrl: "https://www.adobe.com/express/",
     players: 350,
-    embedUrl: "https://www.crazygames.com/embed/super-sketch",
-    category: "Design"
   }
 ];
 

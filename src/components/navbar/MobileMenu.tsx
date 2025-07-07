@@ -16,6 +16,13 @@ const MobileMenu = ({ isMenuOpen, handleNavigate }: MobileMenuProps) => {
       <div className="container px-4 py-4 space-y-2">
         <Button
           variant="ghost"
+          onClick={() => handleNavigate('/')}
+          className="w-full justify-start text-sm font-medium"
+        >
+          Home
+        </Button>
+        <Button
+          variant="ghost"
           onClick={() => handleNavigate('/events')}
           className="w-full justify-start text-sm font-medium"
         >

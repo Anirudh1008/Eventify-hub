@@ -11,6 +11,13 @@ const NavLinks = ({ handleNavigate }: NavLinksProps) => {
     <nav className="hidden md:flex items-center space-x-1">
       <Button
         variant="ghost"
+        onClick={() => handleNavigate('/')}
+        className="text-sm font-medium hover:text-primary"
+      >
+        Home
+      </Button>
+      <Button
+        variant="ghost"
         onClick={() => handleNavigate('/events')}
         className="text-sm font-medium hover:text-primary"
       >
