@@ -24,6 +24,9 @@ import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import PaymentPage from "./pages/PaymentPage";
 import RegistrationSuccess from "./pages/RegistrationSuccess";
+import Colleges from "./pages/Colleges";
+import CollegeDetails from "./pages/CollegeDetails";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +44,8 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/events/:id" element={<EventDetails />} />
             <Route path="/challenges" element={<Challenges />} />
+            <Route path="/colleges" element={<Colleges />} />
+            <Route path="/colleges/:id" element={<CollegeDetails />} />
             <Route path="/badges" element={<Badges />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/games" element={<Games />} />
@@ -48,6 +53,7 @@ const App = () => (
             <Route path="/organizers" element={<Organizers />} />
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/payment/:eventId" element={<PaymentPage />} />

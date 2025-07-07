@@ -68,6 +68,15 @@ const HeroSection = () => {
               <Button 
                 variant="outline" 
                 className="h-12 px-6 rounded-full flex items-center gap-2 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-sm transition-all duration-300"
+                onClick={() => navigate('/colleges')}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>Browse Colleges</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="h-12 px-6 rounded-full flex items-center gap-2 dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-sm transition-all duration-300"
                 onClick={() => navigate('/organizers')}
               >
                 <Calendar className="h-4 w-4" />

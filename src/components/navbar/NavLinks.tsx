@@ -1,56 +1,42 @@
 
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
-type NavLinkProps = {
+interface NavLinksProps {
   handleNavigate: (path: string) => void;
-};
+}
 
-const NavLinks: React.FC<NavLinkProps> = ({ handleNavigate }) => {
+const NavLinks = ({ handleNavigate }: NavLinksProps) => {
   return (
-    <nav className="hidden md:flex items-center gap-6">
-      <a 
-        href="#" 
-        onClick={() => handleNavigate('/')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
+    <nav className="hidden md:flex items-center space-x-1">
+      <Button
+        variant="ghost"
+        onClick={() => handleNavigate('/events')}
+        className="text-sm font-medium hover:text-primary"
       >
-        Home
-      </a>
-      <a 
-        href="#" 
-        onClick={() => handleNavigate('/events')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
-      >
-        Explore
-      </a>
-      <a 
-        href="#" 
-        onClick={() => handleNavigate('/challenges')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
+        Events
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => handleNavigate('/challenges')}
+        className="text-sm font-medium hover:text-primary"
       >
         Challenges
-      </a>
-      <a 
-        href="#games" 
-        onClick={() => handleNavigate('/games')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => handleNavigate('/colleges')}
+        className="text-sm font-medium hover:text-primary"
       >
-        Games
-      </a>
-      <a 
-        href="#" 
-        onClick={() => handleNavigate('/leaderboard')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
+        Colleges
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => handleNavigate('/leaderboard')}
+        className="text-sm font-medium hover:text-primary"
       >
         Leaderboard
-      </a>
-      <a 
-        href="#" 
-        onClick={() => handleNavigate('/contact')} 
-        className="text-sm font-medium hover:text-primary transition-colors"
-      >
-        Contact
-      </a>
+      </Button>
     </nav>
   );
 };
