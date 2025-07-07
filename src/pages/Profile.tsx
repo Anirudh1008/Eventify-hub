@@ -8,25 +8,10 @@ import ProfileSection from '@/components/profile/ProfileSection';
 import { Button } from '@/components/ui/button';
 import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Add this effect to verify Supabase connection
-    const checkConnection = async () => {
-      try {
-        const { data, error } = await supabase.from('users').select('*').limit(1);
-        console.log('Supabase connection test:', { success: !error, data, error });
-      } catch (err) {
-        console.error('Error testing Supabase connection:', err);
-      }
-    };
-    
-    checkConnection();
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -59,7 +44,7 @@ const Profile = () => {
                 </Button>
                 <Button
                   size="lg"
-                  onClick={() => navigate('/login?tab=signup')}
+                  onClick={() => navigate('/signup')}
                   className="bg-gradient-to-r from-eventify-purple to-eventify-blue text-white gap-2"
                 >
                   <UserPlus className="h-4 w-4" />

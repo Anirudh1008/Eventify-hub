@@ -34,8 +34,8 @@ const Colleges = () => {
   const [colleges, setColleges] = useState<College[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedState, setSelectedState] = useState('all');
+  const [selectedType, setSelectedType] = useState('all');
 
   useEffect(() => {
     fetchColleges();
@@ -60,8 +60,8 @@ const Colleges = () => {
     const matchesSearch = college.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          college.short_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          college.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesState = !selectedState || college.state === selectedState;
-    const matchesType = !selectedType || college.college_type === selectedType;
+    const matchesState = selectedState === 'all' || college.state === selectedState;
+    const matchesType = selectedType === 'all' || college.college_type === selectedType;
     
     return matchesSearch && matchesState && matchesType;
   });
@@ -110,7 +110,7 @@ const Colleges = () => {
                   <SelectValue placeholder="Select State" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All States</SelectItem>
+                  <SelectItem value="all">All States</SelectItem>
                   {states.map(state => (
                     <SelectItem key={state} value={state}>{state}</SelectItem>
                   ))}
@@ -121,7 +121,7 @@ const Colleges = () => {
                   <SelectValue placeholder="College Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   {types.map(type => (
                     <SelectItem key={type} value={type}>{type}</SelectItem>
                   ))}

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Search, BookOpen, Award, Calendar, Sparkles, ListPlus } from "lucide-react";
+import { ArrowRight, BookOpen, Award, Calendar, Sparkles, ListPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
@@ -96,7 +96,7 @@ const HeroSection = () => {
             <div className="flex flex-wrap justify-center gap-16 mb-8">
               <div className="flex items-center gap-3">
                 <div className="bg-green-50 dark:bg-green-900/20 p-2 rounded-full">
-                  <Search className="h-5 w-5 text-green-500" />
+                  <Calendar className="h-5 w-5 text-green-500" />
                 </div>
                 <div className="text-left">
                   <p className="text-xl font-bold">1000+</p>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { User, LogIn, LogOut } from 'lucide-react';
+import { User, UserPlus, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
@@ -58,22 +58,13 @@ const AuthButtons = () => {
   return (
     <div className="hidden md:flex items-center gap-2">
       <Button 
-        variant="outline" 
-        size="sm" 
-        className="rounded-full dark:bg-black/20 dark:hover:bg-black/40 backdrop-blur-sm transition-all duration-300 gap-1"
-        onClick={() => navigate('/login')}
-      >
-        <LogIn className="h-4 w-4" />
-        Login
-      </Button>
-      <Button 
         variant="default" 
         size="sm" 
         className="rounded-full bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
-        onClick={() => navigate('/profile')}
+        onClick={() => navigate('/signup')}
       >
-        <User className="h-4 w-4 mr-1" />
-        Profile
+        <UserPlus className="h-4 w-4 mr-1" />
+        Sign Up
       </Button>
     </div>
   );

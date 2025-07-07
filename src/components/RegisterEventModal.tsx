@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Users, CreditCard } from "lucide-react";
+import { X, Calendar, MapPin, Users, CreditCard, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 // Define the proper types for props
 interface EventData {
@@ -35,6 +37,8 @@ const RegisterEventModal: React.FC<RegisterEventModalProps> = ({
   isProcessing = false 
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -53,6 +57,15 @@ const RegisterEventModal: React.FC<RegisterEventModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please login or sign up to register for events",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Form validation
     if (!formData.name || !formData.email || !formData.phoneNumber) {
       toast({
@@ -70,6 +83,55 @@ const RegisterEventModal: React.FC<RegisterEventModalProps> = ({
       description: "Redirecting to payment..."
     });
   };
+
+  // If user is not logged in, show login prompt
+  if (!user) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="bg-background rounded-lg w-full max-w-md">
+          <div className="flex justify-between items-center p-4 border-b">
+            <h2 className="text-xl font-semibold">Login Required</h2>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+          
+          <div className="p-6">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-medium mb-2">Authentication Required</h3>
+              <p className="text-muted-foreground">
+                You need to login or sign up to register for events
+              </p>
+            </div>
+            
+            <div className="flex gap-4">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  onClose();
+                  navigate('/login');
+                }}
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+              <Button
+                className="flex-1 bg-gradient-to-r from-eventify-purple to-eventify-blue text-white"
+                onClick={() => {
+                  onClose();
+                  navigate('/signup');
+                }}
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Sign Up
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
