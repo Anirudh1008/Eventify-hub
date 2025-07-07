@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Search, Calendar, MapPin, Building } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { eventsAPI, collegesAPI } from "@/services/api";
 
 interface SearchResult {
   id: number;
@@ -13,6 +12,23 @@ interface SearchResult {
   location?: string;
   date?: string;
 }
+
+// Mock data for demonstration - replace with actual API calls
+const mockEvents = [
+  { id: 1, title: "National Hackathon 2023", description: "48-hour coding marathon", location: "Virtual Event", date: "Dec 15-17, 2023", category: "Tech" },
+  { id: 2, title: "Business Case Competition", description: "Real-world business challenges", location: "New Delhi", date: "Dec 20, 2023", category: "Academic" },
+  { id: 3, title: "Design Festival 2023", description: "Celebration of design", location: "Mumbai", date: "Jan 5-7, 2024", category: "Arts" },
+  { id: 4, title: "AI/ML Workshop", description: "Machine Learning fundamentals", location: "Bangalore", date: "Jan 10, 2024", category: "Tech" },
+  { id: 5, title: "Cultural Fest 2024", description: "Inter-college cultural competition", location: "Chennai", date: "Jan 15-17, 2024", category: "Cultural" }
+];
+
+const mockColleges = [
+  { id: 1, name: "Indian Institute of Technology Delhi", short_name: "IIT Delhi", location: "New Delhi", state: "Delhi", college_type: "Engineering" },
+  { id: 2, name: "Indian Institute of Management Ahmedabad", short_name: "IIM Ahmedabad", location: "Ahmedabad", state: "Gujarat", college_type: "Management" },
+  { id: 3, name: "All India Institute of Medical Sciences", short_name: "AIIMS", location: "New Delhi", state: "Delhi", college_type: "Medical" },
+  { id: 4, name: "National Institute of Technology Trichy", short_name: "NIT Trichy", location: "Tiruchirappalli", state: "Tamil Nadu", college_type: "Engineering" },
+  { id: 5, name: "Indian Statistical Institute", short_name: "ISI", location: "Kolkata", state: "West Bengal", college_type: "Statistics" }
+];
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -45,15 +61,10 @@ const SearchBar = () => {
 
       setLoading(true);
       try {
-        const [eventsData, collegesData] = await Promise.all([
-          eventsAPI.getAll(),
-          collegesAPI.getAll()
-        ]);
-
         const searchQuery = query.toLowerCase();
         
         // Filter events
-        const eventResults: SearchResult[] = eventsData
+        const eventResults: SearchResult[] = mockEvents
           .filter((event: any) => 
             event.title.toLowerCase().includes(searchQuery) ||
             event.description.toLowerCase().includes(searchQuery) ||
@@ -71,7 +82,7 @@ const SearchBar = () => {
           }));
 
         // Filter colleges
-        const collegeResults: SearchResult[] = collegesData
+        const collegeResults: SearchResult[] = mockColleges
           .filter((college: any) => 
             college.name.toLowerCase().includes(searchQuery) ||
             college.short_name.toLowerCase().includes(searchQuery) ||
@@ -84,7 +95,7 @@ const SearchBar = () => {
             id: college.id,
             title: college.name,
             type: 'college' as const,
-            description: college.description,
+            description: college.college_type,
             location: `${college.location}, ${college.state}`
           }));
 
@@ -112,6 +123,16 @@ const SearchBar = () => {
     setQuery('');
   };
 
+  const handleInputFocus = () => {
+    if (query.length >= 2 && results.length > 0) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   return (
     <div className="relative hidden md:block" ref={searchRef}>
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -120,8 +141,8 @@ const SearchBar = () => {
         placeholder="Search events, colleges..."
         className="w-[250px] pl-8 rounded-full bg-secondary/80 border-none"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => query.length >= 2 && setIsOpen(true)}
+        onChange={handleInputChange}
+        onFocus={handleInputFocus}
       />
       
       {/* Search Results Dropdown */}
@@ -137,7 +158,7 @@ const SearchBar = () => {
                 <button
                   key={`${result.type}-${result.id}`}
                   onClick={() => handleResultClick(result)}
-                  className="w-full px-4 py-3 text-left hover:bg-secondary/50 flex items-start gap-3 border-b last:border-b-0"
+                  className="w-full px-4 py-3 text-left hover:bg-secondary/50 flex items-start gap-3 border-b last:border-b-0 transition-colors"
                 >
                   <div className="mt-1">
                     {result.type === 'event' ? (
@@ -148,6 +169,11 @@ const SearchBar = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm truncate">{result.title}</div>
+                    {result.description && (
+                      <div className="text-xs text-muted-foreground mt-1 truncate">
+                        {result.description}
+                      </div>
+                    )}
                     {result.location && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                         <MapPin className="h-3 w-3" />
