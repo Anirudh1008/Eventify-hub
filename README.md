@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: eventify-nexus-hub-53.vercel.app
+**URL**: https://eventify-nexus-hub-53.vercel.app/
 
 ## How can I edit this code?
 
